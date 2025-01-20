@@ -13,16 +13,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+        run: |
+          TIMESTAMP=$(date +%s)
+          docker build . -f Dockerfile -t my-image-name:$TIMESTAMP
 
       - name: Save Docker image as .tar file
         run: |
-          TIMESTAMP=$(date +%s)
-          docker save -o tsipderp$TIMESTAMP.tar my-image-name:$TIMESTAMP
+          docker save -o tsipderp-$TIMESTAMP.tar my-image-name:$TIMESTAMP
 
       - name: Upload Docker image as artifact
         uses: actions/upload-artifact@v3
         with:
-          name: tsipderp$(date +%s).tar
-          path: tsipderp$(date +%s).tar
+          name: docker-image
+          path: tsipderp-$TIMESTAMP.tar
