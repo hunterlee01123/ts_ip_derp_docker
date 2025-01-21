@@ -37,6 +37,6 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
 RUN apk add openssl && mkdir /ssl
 
 # 生成自签10年证书
-RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout /ssl/derp.javaow.com.key.pem -out /ssl/derp.javaow.com.crt.pem -subj "/CN=derp.javaow.com" -addext "subjectAltName=DNS:derp.javaow.com"
+RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout /ssl/derp.javaow.com.key -out /ssl/derp.javaow.com.crt -subj "/CN=derp.javaow.com" -addext "subjectAltName=DNS:derp.javaow.com"
 
 CMD ./derper -hostname derp.javaow.com -a :61322 -certmode manual -certdir /ssl
