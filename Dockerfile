@@ -39,5 +39,4 @@ RUN apk add openssl && mkdir /ssl
 # 生成自签10年证书
 RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout /ssl/derp.javaow.com.key.pem -out /ssl/derp.javaow.com.crt.pem -subj "/CN=derp.javaow.com" -addext "subjectAltName=DNS:derp.javaow.com"
 
-898604F310 23706 46810
 CMD ./derper -hostname derp.javaow.com -a :61322 -certmode manual -certdir /ssl
