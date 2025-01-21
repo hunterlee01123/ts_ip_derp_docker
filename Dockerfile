@@ -12,7 +12,7 @@ RUN find /go/pkg/mod/tailscale.com@*/cmd/derper/cert.go -type f -exec sed -i '97
 
 # 编译
 RUN derper_dir=$(find /go/pkg/mod/tailscale.com@*/cmd/derper -type d) && \
-    cd $derper_dir && \
+	cd $derper_dir && \
     go build -o /etc/derp/derper
 
 # 生成最终镜像
@@ -36,11 +36,8 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
 # 安装openssl
 RUN apk add openssl && mkdir /ssl
 
-# 生成自签10年证书 - 使用IP而不是域名
-RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes \
-    -keyout /ssl/key.pem \
-    -out /ssl/cert.pem \
-    -subj "/CN=111.229.241.18" \
-    -addext "subjectAltName=IP:111.229.241.18"
+# 生成自签10年证书
+RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout /ssl/derp.javaow.com.key.pem -out /ssl/derp.javaow.com.crt.pem -subj "/CN=derp.javaow.com" -addext "subjectAltName=DNS:derp.javaow.com"
 
-CMD ./derper -hostname 111.229.241.18 -a :61322 -certmode manual -certdir /ssl
+898604F310 23706 46810
+CMD ./derper -hostname derp.javaow.com -a :36666 -certmode manual -certdir /ssl
