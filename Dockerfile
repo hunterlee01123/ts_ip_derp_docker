@@ -8,7 +8,7 @@ FROM golang:alpine AS builder
 RUN go install tailscale.com/cmd/derper@latest
 
 # 去除域名验证（删除cmd/derper/cert.go文件的91~93行）
-RUN find /go/pkg/mod/tailscale.com@*/cmd/derper/cert.go -type f -exec sed -i '97,99d' {} +
+# RUN find /go/pkg/mod/tailscale.com@*/cmd/derper/cert.go -type f -exec sed -i '97,99d' {} +
 
 # 编译
 RUN derper_dir=$(find /go/pkg/mod/tailscale.com@*/cmd/derper -type d) && \
@@ -37,7 +37,10 @@ RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/re
 RUN apk add openssl && mkdir /ssl
 
 # 生成自签10年证书
-RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout /ssl/derp.javaow.com.key -out /ssl/derp.javaow.com.crt -subj "/CN=derp.javaow.com" -addext "subjectAltName=DNS:derp.javaow.com"
 
 
-CMD ./derper -hostname derp.javaow.com -a :36666 -certmode manual -certdir /ssl
+ENV DERP_IP="111.229.241.18"
+RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout /ssl/${DERP_IP}.key -out /ssl/${DERP_IP}.crt -subj "/CN=${DERP_IP}" -addext "subjectAltName=IP:${DERP_IP}"
+
+
+CMD ./derper -hostname ${DERP_IP} -a :36666 -certmode manual -certdir /ssl
