@@ -40,4 +40,4 @@ RUN apk add openssl && mkdir /ssl
 RUN openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout /ssl/derp.javaow.com.key -out /ssl/derp.javaow.com.crt -subj "/CN=derp.javaow.com" -addext "subjectAltName=DNS:derp.javaow.com"
 
 
-CMD ./derper -hostname derp.javaow.com -a :36666 -certmode manual -certdir /ssl
+CMD ./derper -hostname 111.229.241.18 -a :36666 -certmode manual -certdir /ssl
